@@ -19,7 +19,7 @@ public class Login extends HttpServlet {
         String password = request.getParameter("password");
         Doctor doctor = new Doctor();
         try {
-            doctor= doctor.login(email,password);
+            doctor = doctor.login(email,password);
             if(doctor != null){
                 SecureRandom secureRandom = new SecureRandom();
                 byte[] randomBytes= new byte[10];
