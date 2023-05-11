@@ -1,5 +1,8 @@
 package Model;
 
+import dao.Database;
+
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
@@ -24,10 +27,19 @@ public class Doctor extends Persona{
         this.relaseList = relaseList;
     }
 
+    public Doctor(String name, String email, String pass, LocalDateTime lastlog, String session) {
+        super(name, email);
+        this.pass = pass;
+        this.lastlog = lastlog;
+        this.session = session;
+    }
+
     //Metodos
 
-    public static void login(String email, String password){
-
+    public Doctor login(String email, String password) throws SQLException {
+        Doctor doctor= new Doctor();
+        doctor= Database.loginDoctor(email,password);
+        return doctor;
     }
     @Override
     public void load(String id) {
