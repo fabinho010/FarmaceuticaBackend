@@ -16,20 +16,34 @@ public class Database {
     private Statement statement;
 
     //Metdodo que me ejecuta la query en la base de datos
-        public ResultSet loadSelect(String Query) {
-            ResultSet rs;
-            Statement st;
-            rs = null;
-            try {
-                st = connection.createStatement();
-                rs = st.executeQuery(Query);
-            } catch (SQLException e) {
-                System.out.println("Error a Databse.loadSelect" + e.getMessage());
-            }
-            return rs;
+    public ResultSet loadSelect(String query) {
+        ResultSet rs = null;
+        Statement st;
+        try {
+            st = connection.createStatement();
+            rs = st.executeQuery(query);
+        } catch (SQLException e) {
+            System.out.println("Error en Database.loadSelect: " + e.getMessage());
         }
 
-        //Metoso que me ejecuta los updates
+        // Verificar si no hay filas seleccionadas
+        boolean hasRows;
+        try {
+            hasRows = rs != null && rs.next();
+        } catch (SQLException e) {
+            System.out.println("Error al verificar filas en ResultSet: " + e.getMessage());
+            hasRows = false;
+        }
+
+        if (!hasRows) {
+            System.out.println("SIN RESULTADOS");
+        }
+
+        return rs;
+    }
+
+
+    //Metoso que me ejecuta los updates
         public void loadUpdate(String query){
             ResultSet rs;
             Statement st;

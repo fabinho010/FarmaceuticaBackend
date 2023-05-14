@@ -4,18 +4,19 @@ import dao.Database;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLOutput;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Random;
 
-public class Doctor extends Persona{
+public class Doctor extends Persona {
     //ATRIBUTOS
     private String pass;
     private LocalDateTime lastlog;
     private int session;
-    private ArrayList <Chip> relaseList;
+    private ArrayList<Chip> relaseList;
 
     //Constructores
 
@@ -46,9 +47,10 @@ public class Doctor extends Persona{
         String query = "Select * from doctor where mail=" + email + ";";
         Database db = new Database();
         db.initDatabaseConnection();
-        ResultSet rs = db.loadSelect(query);
-        try{
-            if (rs.next()){
+
+        try {
+            ResultSet rs = db.loadSelect(query);
+            if (rs.next()) {
                 String name = rs.getString("name");
                 String mail = rs.getString("pass");
                 String pass = rs.getString("mail");
@@ -81,26 +83,27 @@ public class Doctor extends Persona{
 
         //Mejecuta la query
         ResultSet st = db.loadSelect(query);
-        if (st != null){
+
+        if (st.getRow() > 0) {
             //Establezco el set last log
             this.setLastlog(LocalDateTime.now());
             //creao la sesion
             Random random = new Random();
-            String code = "";
-            for(int indice = 0; indice < 10; indice ++){
-                code= code + Integer.toString(random.nextInt(10));
+            String code = "1";
+            for (int indice = 0; indice < 9; indice++) {
+                code = code + Integer.toString(random.nextInt(10));
             }
             int session = Integer.parseInt(code);
             //Seteo la sesion
             this.setSession(session);
 
-           query = "UPDATE doctor SET last_log = '" + this.getLastlog() + "', session = '" + this.session + "' WHERE mail = '" + email + "';";
+            query = "UPDATE doctor SET last_log = '" + this.getLastlog() + "', session = '" + this.session + "' WHERE mail = '" + email + "';";
             db.loadUpdate(query);
             this.load(email);
             //dentro de if se hace el load
             //Cierro la conexión con la base de datos
             db.closeDatabaseConnection();
-            }
+        }
     }
 
     //Getters y Setters
