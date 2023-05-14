@@ -17,23 +17,20 @@ public class Login extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
-        Doctor doctor = new Doctor();
-        try {
-            doctor = doctor.login(email,password);
-            if(doctor != null){
-                SecureRandom secureRandom = new SecureRandom();
-                byte[] randomBytes= new byte[10];
-                secureRandom.nextBytes(randomBytes);
-                String codigoSesion =Base64.getEncoder().encodeToString(randomBytes);
-                response.getWriter().write(codigoSesion);
-            }else {
-                response.getWriter().write("null");
+        if(email != null && !email.isEmpty() && password != null && !password.isEmpty()){
+            Doctor doctor = new Doctor();
+            try {
+                doctor.login(email,password);
+                response.getWriter().write(String.valueOf(doctor.getSession()));
+            } catch (SQLException e) {
+                System.out.println("Error en Login.doGet" + e.getMessage());;
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error en el servidor");
             }
 
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        } else {
+            // Envía una respuesta de error al cliente indicando que los parámetros son inválidos
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Parámetros inválidos");
+          }
     }
-
 
 }

@@ -2,9 +2,13 @@ package Model;
 
 import dao.Database;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Random;
 
 public class Doctor extends Persona{
     //ATRIBUTOS
@@ -38,49 +42,65 @@ public class Doctor extends Persona{
 
     @Override
     public void load(String id) {
-        /*
-        String quey = "Select * from doctor wherer mail" + email + "AND" + "password = " + password";";
-        bbbd bd = new bbdd();
-        bd.connection();
-        ResultSet st = bd.loadSelect(query);
 
-
+        String query = "Select * from doctor where mail=" + email + ";";
+        Database db = new Database();
+        db.initDatabaseConnection();
+        ResultSet rs = db.loadSelect(query);
         try{
-        this.setNmae()
-        this.setset mail getStrin "maiil"
-        this pass
-        }cach (SQL){
-        sout --> "Error a doctor.looad: " + e.getMesssage
-        }
-        * */
+            if (rs.next()){
+                String name = rs.getString("name");
+                String mail = rs.getString("pass");
+                String pass = rs.getString("mail");
+                int session = rs.getInt("session");
+                Date lastLogin = rs.getDate("last_log");
+                //SETEO
+                this.name = name;
+                this.email = mail;
+                this.pass = pass;
+                this.session = session;
+                this.lastlog = LocalDateTime.ofInstant(lastLogin.toInstant(), ZoneId.systemDefault());
+                // Mostrar los valores obtenidos por pantalla
+                System.out.println("Name: " + name);
+                System.out.println("Email: " + mail);
+                System.out.println("Password: " + pass);
+                System.out.println("Session: " + session);
+                System.out.println("Last Login: " + lastLogin);
 
+            }
+        } catch (SQLException e) {
+            System.out.println("Error a doctor.load" + e.getMessage());
+        }
     }
 
-    public Doctor login(String email, String password) throws SQLException {
-        /*
-        String quey = "Select * from doctor wherer mail" + email + "AND" + "password = " + password";";
-        bbbd bd = new bbdd();
-        bd.connection();
-        ResultSet st = bd.loadSelect(query);
+    public void login(String email, String password) throws SQLException {
 
-        if (rs != null){
-            this.setLastLog=(LocalDatetime.now()
-            Random rd = new Random();
+        String query = "SELECT * FROM doctor WHERE mail = '" + email + "' AND pass = '" + password + "';";
+        Database db = new Database();
+        db.initDatabaseConnection();
+
+        //Mejecuta la query
+        ResultSet st = db.loadSelect(query);
+        if (st != null){
+            //Establezco el set last log
+            this.setLastlog(LocalDateTime.now());
+            //creao la sesion
+            Random random = new Random();
             String code = "";
             for(int indice = 0; indice < 10; indice ++){
-                code= random.nesxtInt(10);
+                code= code + Integer.toString(random.nextInt(10));
             }
-            int session = Integer.parseint(code);
-            this.session(session);
-            quey = "UPDATE  doctor  SET laslog = " + this.getLastLog()+ ", session= "+ this.session+ "where email=" + email + ";" ";
+            int session = Integer.parseInt(code);
+            //Seteo la sesion
+            this.setSession(session);
+
+           query = "UPDATE doctor SET last_log = '" + this.getLastlog() + "', session = '" + this.session + "' WHERE mail = '" + email + "';";
+            db.loadUpdate(query);
             this.load(email);
             //dentro de if se hace el load
+            //Cierro la conexión con la base de datos
+            db.closeDatabaseConnection();
             }
-        * */
-        Doctor doctor;
-        Database db = new Database();
-        doctor= db.loginDoctor(email,password);
-        return doctor;
     }
 
     //Getters y Setters
@@ -100,6 +120,7 @@ public class Doctor extends Persona{
     public void setLastlog(LocalDateTime lastlog) {
         this.lastlog = lastlog;
     }
+
 
     public int getSession() {
         return session;

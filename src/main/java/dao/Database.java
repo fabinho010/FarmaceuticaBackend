@@ -14,82 +14,37 @@ import java.util.ArrayList;
 public class Database {
     private Connection connection;
     private Statement statement;
-    private static HikariDataSource dataSource;
 
-    public  Doctor loginDoctor(String email, String password) throws SQLException {
-            /*
-            public resulSet loadSelect(Strinng Query){
-            ResultSet rs
+    //Metdodo que me ejecuta la query en la base de datos
+        public ResultSet loadSelect(String Query) {
+            ResultSet rs;
+            Statement st;
             rs = null;
-            try{
-                rs= st.executeQuey(query)
-            }catch(SQL Exception){
-            dout error bbbd
-            }
-            return st
-            */
-            Database db = new Database();
-            db.initDatabaseConnection();
-            String query = "SELECT * FROM doctor;";
-            System.out.println("conexion establecida");
             try {
-                ResultSet resultSet = db.statement.executeQuery(query);
-                System.out.println("Estoy dentro");
-                while (resultSet.next()){
-                     email = resultSet.getString("mail");
-                    password = resultSet.getString("pass");
-
-                    System.out.println("email: " + email);
-                    System.out.println("gender: " + password);
-                    System.out.println("--------------------");
-                }
-                resultSet.close();
-
-            }catch (SQLException e){
-                System.out.println("Error en la query" + e.getMessage());
+                st = connection.createStatement();
+                rs = st.executeQuery(Query);
+            } catch (SQLException e) {
+                System.out.println("Error a Databse.loadSelect" + e.getMessage());
             }
-
-            db.closeDatabaseConnection();
-        /*try (Connection connection = dataSource.getConnection()) {
-            System.out.println("Reading data....");
-            try (Statement statement = connection.prepareStatement(query)){
-                statement.setCursorName(email);
-                statement.setCursorName(password);
-
-                ResultSet resultSet = statement.executeQuery(query);
-
-                if (resultSet.next()){
-                    String name = resultSet.getString("name");
-                    email = resultSet.getString("email");
-                    password = resultSet.getNString("password");
-                    Date lastLog = resultSet.getDate("lastLog");
-                    int session = resultSet.getInt("session");
-                    //Adapto mi codigo
-                    LocalDateTime lastLogin = lastLog.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-                    String sessionString = Integer.toString(session);
-                    closeDatabaseConnection();
-                    return new Doctor(name,email,password,lastLogin,session);
-                }
-                closeDatabaseConnection();
-            }
-            //Si no se encuentra un doctor
-            return null;
-        }*/
-        return null;
-    }
-
-    /*
-    public void  updateDoctor(String Qquery){
-
-        try{
-        }catch sql{
-        sout --> 
+            return rs;
         }
-    }
-    * */
+
+        //Metoso que me ejecuta los updates
+        public void loadUpdate(String query){
+            ResultSet rs;
+            Statement st;
+            rs = null;
+            try {
+                st = connection.createStatement();
+               int rowsAffected = st.executeUpdate(query);
+            } catch (SQLException e) {
+                System.out.println("Error a Database.loadUpdate" + e.getMessage());
+            }
+        }
 
 
-    private void initDatabaseConnection() {
+
+    public void initDatabaseConnection() {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
         }catch (ClassNotFoundException e){
@@ -108,7 +63,7 @@ public class Database {
             System.out.println("BBDD.conectar.statement " + e.getMessage());
         }
     }
-    private  void closeDatabaseConnection() {
+    public   void closeDatabaseConnection() {
         try {
             if (statement != null) {
                 statement.close();
