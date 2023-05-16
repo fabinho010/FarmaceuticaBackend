@@ -18,12 +18,13 @@ public class Database {
     //Metdodo que me ejecuta la query en la base de datos
     public ResultSet loadSelect(String query) {
         ResultSet rs = null;
-        Statement st;
+        Statement st = null;
         try {
             st = connection.createStatement();
             rs = st.executeQuery(query);
         } catch (SQLException e) {
             System.out.println("Error en Database.loadSelect: " + e.getMessage());
+            System.out.println("Error en query" + e.getMessage());
         }
 
         // Verificar si no hay filas seleccionadas

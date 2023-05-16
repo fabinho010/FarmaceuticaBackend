@@ -5,6 +5,7 @@ import dao.Database;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLOutput;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -69,10 +70,12 @@ public class Doctor extends Persona {
                 System.out.println("Session: " + session);
                 System.out.println("Last Login: " + lastLogin);
 
+                db.closeDatabaseConnection();
             }
         } catch (SQLException e) {
             System.out.println("Error a doctor.load" + e.getMessage());
         }
+        db.closeDatabaseConnection();
     }
 
     public void login(String email, String password) throws SQLException {
@@ -80,10 +83,8 @@ public class Doctor extends Persona {
         String query = "SELECT * FROM doctor WHERE mail = '" + email + "' AND pass = '" + password + "';";
         Database db = new Database();
         db.initDatabaseConnection();
-
         //Mejecuta la query
         ResultSet st = db.loadSelect(query);
-
         if (st.getRow() > 0) {
             //Establezco el set last log
             this.setLastlog(LocalDateTime.now());
@@ -104,6 +105,57 @@ public class Doctor extends Persona {
             //Cierro la conexión con la base de datos
             db.closeDatabaseConnection();
         }
+        db.closeDatabaseConnection();
+    }
+
+    public boolean isLogged(String email,String session) throws SQLException {
+        String query = "SELECT * FROM doctor where mail = '" + email +"' AND session = '"+ session+"';";
+        Database database = new Database();
+        Doctor doctor = new Doctor();
+        try {
+            database.initDatabaseConnection();
+            //Inicio conexion base de datos
+            ResultSet resultSet = database.loadSelect(query);
+            //Si me devuelve la fila
+            if (resultSet.getRow()>0){
+                //Obtengo la contraseña para hacer el login
+                String pass = resultSet.getString("pass");
+                //Llamo al metodo login
+                doctor.login(email,pass);
+                //Confirmo las creendenciales
+                if (doctor.getSession()>0){
+                    return true;
+                }
+            }
+        }finally {
+            database.closeDatabaseConnection();
+        }
+       return false;
+    }
+    public void loadRealeaseList(){
+        String mail = this.getEmail();
+        System.out.println(mail);
+        ArrayList<String> listXip = new ArrayList<>();
+        LocalDate fechaHoy = LocalDate.now();
+        String query = "SELECT * FROM xip where doctor_mail= '" + mail + "' AND date > '"+ fechaHoy+"';";
+        Database database = new Database();
+        try {
+            database.initDatabaseConnection();
+            ResultSet resultSet = database.loadSelect(query);
+            while (resultSet.next()){
+                int id = resultSet.getInt("id");
+                mail = resultSet.getString("doctor_mail");
+                int medicina = resultSet.getInt("id_medicine");
+                String paciente = resultSet.getString("id_patient");
+                Date date = resultSet.getDate("date");
+                String releaseData = "ID: " + id + ", Medicine ID: " + medicina + ", Patient ID: " + paciente + ", Date: " + date;
+                listXip.add(releaseData);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error en la query" + e.getMessage());
+        }
+
+
     }
 
     //Getters y Setters
