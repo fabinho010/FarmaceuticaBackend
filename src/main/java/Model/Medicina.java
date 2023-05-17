@@ -58,4 +58,5 @@ public class Medicina {
     public void settMin(float tMin) {
         this.tMin = tMin;
     }
+
 }

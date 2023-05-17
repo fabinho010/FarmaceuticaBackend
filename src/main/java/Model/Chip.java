@@ -21,7 +21,6 @@ public class Chip {
         this.paciente = paciente;
         this.fechaFin = fechaFin;
     }
-
     //Metodos
 
     public void load(int id){
@@ -60,5 +59,15 @@ public class Chip {
 
     public void setFechaFin(Date fechaFin) {
         this.fechaFin = fechaFin;
+    }
+
+    @Override
+    public String toString() {
+        return "Chip{" +
+                "id=" + id +
+                ", medicina=" + medicina +
+                ", paciente=" + paciente +
+                ", fechaFin=" + fechaFin +
+                '}';
     }
 }

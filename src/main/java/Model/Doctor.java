@@ -69,7 +69,7 @@ public class Doctor extends Persona {
                 System.out.println("Password: " + pass);
                 System.out.println("Session: " + session);
                 System.out.println("Last Login: " + lastLogin);
-
+                rs.close();
                 db.closeDatabaseConnection();
             }
         } catch (SQLException e) {
@@ -101,6 +101,7 @@ public class Doctor extends Persona {
             query = "UPDATE doctor SET last_log = '" + this.getLastlog() + "', session = '" + this.session + "' WHERE mail = '" + email + "';";
             db.loadUpdate(query);
             this.load(email);
+            st.close();
             //dentro de if se hace el load
             //Cierro la conexión con la base de datos
             db.closeDatabaseConnection();
@@ -124,6 +125,7 @@ public class Doctor extends Persona {
                 doctor.login(email,pass);
                 //Confirmo las creendenciales
                 if (doctor.getSession()>0){
+                    resultSet.close();
                     return true;
                 }
             }
@@ -134,23 +136,53 @@ public class Doctor extends Persona {
     }
     public void loadRealeaseList(){
         String mail = this.getEmail();
-        System.out.println(mail);
-        ArrayList<String> listXip = new ArrayList<>();
+        ArrayList<Chip> listXip = new ArrayList<>();
+        Chip chip ;
+        Medicina medicine = new Medicina();
+        Paciente paciente = new Paciente();
         LocalDate fechaHoy = LocalDate.now();
-        String query = "SELECT * FROM xip where doctor_mail= '" + mail + "' AND date > '"+ fechaHoy+"';";
+        String query = "SELECT * FROM xip where doctor_mail= '" + mail + "' AND date >= '"+ fechaHoy+"';";
         Database database = new Database();
         try {
             database.initDatabaseConnection();
             ResultSet resultSet = database.loadSelect(query);
+            System.out.println("Entro 1");
             while (resultSet.next()){
+                System.out.println("Entro ya");
                 int id = resultSet.getInt("id");
                 mail = resultSet.getString("doctor_mail");
                 int medicina = resultSet.getInt("id_medicine");
-                String paciente = resultSet.getString("id_patient");
+                //Obtengo el objeto medicina en la base de datos
+                query= "SELECT * FROM medicine WHERE id ='"+ medicina +"';";
+                resultSet = database.loadSelect(query);
+                if (resultSet.next()){
+                    int medicina_id = resultSet.getInt("id");
+                    String name = resultSet.getString("name");
+                    double tmax = resultSet.getDouble("tmax");
+                    double tmin = resultSet.getDouble("tmin");
+                    medicine = new Medicina(medicina_id,name,(float) tmax,(float) tmin);
+                }
+                String pacient = resultSet.getString("id_patient");
+                //Obtengo el objeto paciente
+                query="SELECT * FROM patient WHERE mail= '" + pacient +"';";
+                resultSet = database.loadSelect(query);
+                if (resultSet.next()){
+                    mail = resultSet.getString("mail");
+                    String nombre = resultSet.getString("name");
+                    paciente=new Paciente(mail,nombre);
+                }
                 Date date = resultSet.getDate("date");
-                String releaseData = "ID: " + id + ", Medicine ID: " + medicina + ", Patient ID: " + paciente + ", Date: " + date;
-                listXip.add(releaseData);
+                chip = new Chip(id,medicine,paciente,date);
+                listXip.add(chip);
             }
+            //Añado la lista al doctor
+            if (listXip.isEmpty()){
+                System.out.println("No hay na");
+            }else{
+                this.setRelaseList(listXip);
+                System.out.println("Lista metida");
+            }
+            resultSet.close();
         } catch (SQLException e) {
             System.out.println("Error en la query" + e.getMessage());
         }

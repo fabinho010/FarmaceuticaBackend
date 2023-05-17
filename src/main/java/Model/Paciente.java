@@ -18,4 +18,11 @@ public class Paciente extends Persona{
     }
 
 
+    @Override
+    public String toString() {
+        return "Paciente{" +
+                "name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                '}';
+    }
 }

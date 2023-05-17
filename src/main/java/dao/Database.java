@@ -22,6 +22,7 @@ public class Database {
         try {
             st = connection.createStatement();
             rs = st.executeQuery(query);
+            System.out.println("query ejec");
         } catch (SQLException e) {
             System.out.println("Error en Database.loadSelect: " + e.getMessage());
             System.out.println("Error en query" + e.getMessage());

@@ -25,8 +25,12 @@ public class ServXips extends HttpServlet {
             if (checkLog==true){
                 System.out.println("Exito");
                 doctor.loadRealeaseList();
-                System.out.println("Hola vato");
-                System.out.println(doctor.getRelaseList());
+                if (doctor.getRelaseList().isEmpty()){
+                    System.out.println("no hay listas");
+                } else {
+                    System.out.println("buenass");
+                    doctor.getRelaseList().toString();
+                }
             }
         } catch (SQLException e) {
             System.out.println("Error en doctor.isLogged" + e.getMessage());
