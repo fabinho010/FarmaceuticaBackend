@@ -2,10 +2,7 @@ package Model;
 
 import dao.Database;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.SQLOutput;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -86,8 +83,8 @@ public class Doctor extends Persona {
         Database db = new Database();
         db.initDatabaseConnection();
         //Mejecuta la query
-        ResultSet st = db.loadSelect(query);
-        if (st.getRow() > 0) {
+        ResultSet st = db.getStatement().executeQuery(query);
+        if (st.next()) {
             //Establezco el set last log
             this.setLastlog(LocalDateTime.now());
             //creao la sesion
@@ -118,9 +115,9 @@ public class Doctor extends Persona {
         try {
             database.initDatabaseConnection();
             //Inicio conexion base de datos
-            ResultSet resultSet = database.loadSelect(query);
+            ResultSet resultSet = database.getStatement().executeQuery(query);
             //Si me devuelve la fila
-            if (resultSet.getRow()>0){
+            if (resultSet.next()){
                 //Obtengo la contraseña para hacer el login
                 String pass = resultSet.getString("pass");
                 //Llamo al metodo login
@@ -138,60 +135,102 @@ public class Doctor extends Persona {
     }
     public void loadRealeaseList(){
         String mail = this.getEmail();
-        System.out.println(mail);
         ArrayList<Chip> listXip = new ArrayList<>();
         Chip chip ;
         Medicina medicine = new Medicina();
         Paciente paciente = new Paciente();
         LocalDate fechaHoy = LocalDate.now();
         String query = "SELECT * FROM xip where doctor_mail= '" + mail + "' AND date >= '"+ fechaHoy+"';";
+        //Para 3 bases de datos para mis 3 consultas diferentes.
         Database database = new Database();
+        Database database1 = new Database();
+        Database database2 = new Database();
         try {
             database.initDatabaseConnection();
-            ResultSet resultSet = database.loadSelect(query);
-            System.out.println("Entro 1");
+            ResultSet resultSet = database.getStatement().executeQuery(query);
             while (resultSet.next()){
-                System.out.println("Entro ya");
+                System.out.println("Entrandoo");
                 int id = resultSet.getInt("id");
                 mail = resultSet.getString("doctor_mail");
                 int medicina = resultSet.getInt("id_medicine");
                 //Obtengo el objeto medicina en la base de datos
                 query= "SELECT * FROM medicine WHERE id ='"+ medicina +"';";
-                resultSet = database.loadSelect(query);
-                if (resultSet.next()){
-                    int medicina_id = resultSet.getInt("id");
-                    String name = resultSet.getString("name");
-                    double tmax = resultSet.getDouble("tmax");
-                    double tmin = resultSet.getDouble("tmin");
+                database1.initDatabaseConnection();
+                 ResultSet resultSet1 = database1.getStatement().executeQuery(query);
+                if (resultSet1.next()){
+
+                    int medicina_id = resultSet1.getInt("id");
+                    String name = resultSet1.getString("name");
+                    double tmax = resultSet1.getDouble("tmax");
+                    double tmin = resultSet1.getDouble("tmin");
                     medicine = new Medicina(medicina_id,name,(float) tmax,(float) tmin);
+
                 }
+                database1.closeDatabaseConnection();
                 String pacient = resultSet.getString("id_patient");
                 //Obtengo el objeto paciente
                 query="SELECT * FROM patient WHERE mail= '" + pacient +"';";
-                resultSet = database.loadSelect(query);
-                if (resultSet.next()){
-                    mail = resultSet.getString("mail");
-                    String nombre = resultSet.getString("name");
+                database2.initDatabaseConnection();
+                ResultSet resultSet2 = database2.getStatement().executeQuery(query);
+                if (resultSet2.next()){
+                    mail = resultSet2.getString("mail");
+                    String nombre = resultSet2.getString("name");
                     paciente=new Paciente(mail,nombre);
+
                 }
+                database2.closeDatabaseConnection();
+                System.out.println("2");
                 Date date = resultSet.getDate("date");
-                chip = new Chip(id,medicine,paciente,date);
+                chip = new Chip(id,mail,medicine,paciente,date);
                 listXip.add(chip);
+
             }
+
             //Añado la lista al doctor
             if (listXip.isEmpty()){
+                database.closeDatabaseConnection();
                 System.out.println("No hay na");
             }else{
                 this.setRelaseList(listXip);
+                database.closeDatabaseConnection();
                 System.out.println("Lista metida");
+
             }
-            resultSet.close();
+
         } catch (SQLException e) {
             System.out.println("Error en la query" + e.getMessage());
         }
 
 
     }
+
+    public String getTable (){
+        StringBuilder tabla = new StringBuilder();
+        ArrayList<Chip> listaChip = this.getRelaseList();
+
+        //Creo el html
+
+        tabla.append("<table>");
+        tabla.append("<thead><tr><th>ID</th><th>Doctor</th><th>Medicina</th><th>Paciente</th><th>Fecha</th></tr></thead>");
+        tabla.append("<tbody>");
+
+        // Recorre la lista de xips y agrega filas a la tabla
+        for (Chip chip : listaChip) {
+            tabla.append("<tr>");
+            tabla.append("<td>").append(chip.getId()).append("</td>");
+            tabla.append("<td>").append(chip.getDoctor_mail()).append("</td>");
+            tabla.append("<td>").append(chip.getMedicina().getName()).append("</td>");
+            tabla.append("<td>").append(chip.getPaciente().getEmail()).append("</td>");
+            tabla.append("<td>").append(chip.getFechaFin()).append("</td>");
+            tabla.append("</tr>");
+        }
+
+        tabla.append("</tbody>");
+        tabla.append("</table>");
+        return  tabla.toString();
+    }
+
+
 
     //Getters y Setters
 

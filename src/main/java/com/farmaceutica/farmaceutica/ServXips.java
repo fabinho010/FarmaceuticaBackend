@@ -24,14 +24,14 @@ public class ServXips extends HttpServlet {
             checkLog = doctor.isLogged(mail,session);
             if (checkLog==true){
                 System.out.println("Exito");
+                //Cargo los datos al objeto doctor
                 doctor.load(mail);
                 System.out.println(doctor.getEmail());
                 doctor.loadRealeaseList();
                 if (doctor.getRelaseList().isEmpty()){
-                    System.out.println("no hay listas");
+                    response.sendError(HttpServletResponse.SC_NOT_FOUND,"La lista de Chips esta vacía.");
                 } else {
-                    System.out.println("buenass");
-                    doctor.getRelaseList().toString();
+                    response.getWriter().write(doctor.getTable());
                 }
             }
         } catch (SQLException e) {
