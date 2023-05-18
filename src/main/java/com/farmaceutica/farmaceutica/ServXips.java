@@ -24,6 +24,8 @@ public class ServXips extends HttpServlet {
             checkLog = doctor.isLogged(mail,session);
             if (checkLog==true){
                 System.out.println("Exito");
+                doctor.load(mail);
+                System.out.println(doctor.getEmail());
                 doctor.loadRealeaseList();
                 if (doctor.getRelaseList().isEmpty()){
                     System.out.println("no hay listas");

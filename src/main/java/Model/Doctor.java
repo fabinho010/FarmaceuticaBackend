@@ -5,6 +5,7 @@ import dao.Database;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLOutput;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -45,27 +46,28 @@ public class Doctor extends Persona {
     @Override
     public void load(String id) {
 
-        String query = "Select * from doctor where mail=" + email + ";";
+        String query = "SELECT * FROM doctor where mail= '" + id + "';";
         Database db = new Database();
         db.initDatabaseConnection();
 
         try {
-            ResultSet rs = db.loadSelect(query);
+            ResultSet rs = db.getStatement().executeQuery(query);
             if (rs.next()) {
                 String name = rs.getString("name");
-                String mail = rs.getString("pass");
-                String pass = rs.getString("mail");
+                id = rs.getString("mail"); // Corrección: asignar el valor a "mail"
+                String pass = rs.getString("pass"); // Corrección: asignar el valor a "pass"
                 int session = rs.getInt("session");
-                Date lastLogin = rs.getDate("last_log");
+                Timestamp lastloginTimestamp = rs.getTimestamp("last_log");
+                LocalDateTime lastLogin = lastloginTimestamp.toLocalDateTime();
                 //SETEO
                 this.name = name;
-                this.email = mail;
+                this.email = id;
                 this.pass = pass;
                 this.session = session;
-                this.lastlog = LocalDateTime.ofInstant(lastLogin.toInstant(), ZoneId.systemDefault());
+                this.lastlog = lastLogin;
                 // Mostrar los valores obtenidos por pantalla
                 System.out.println("Name: " + name);
-                System.out.println("Email: " + mail);
+                System.out.println("Email: " + id);
                 System.out.println("Password: " + pass);
                 System.out.println("Session: " + session);
                 System.out.println("Last Login: " + lastLogin);
@@ -73,7 +75,7 @@ public class Doctor extends Persona {
                 db.closeDatabaseConnection();
             }
         } catch (SQLException e) {
-            System.out.println("Error a doctor.load" + e.getMessage());
+            System.out.println("Error en doctor.load: " + e.getMessage());
         }
         db.closeDatabaseConnection();
     }
@@ -100,7 +102,7 @@ public class Doctor extends Persona {
 
             query = "UPDATE doctor SET last_log = '" + this.getLastlog() + "', session = '" + this.session + "' WHERE mail = '" + email + "';";
             db.loadUpdate(query);
-            this.load(email);
+            load(email);
             st.close();
             //dentro de if se hace el load
             //Cierro la conexión con la base de datos
@@ -136,6 +138,7 @@ public class Doctor extends Persona {
     }
     public void loadRealeaseList(){
         String mail = this.getEmail();
+        System.out.println(mail);
         ArrayList<Chip> listXip = new ArrayList<>();
         Chip chip ;
         Medicina medicine = new Medicina();

@@ -15,14 +15,20 @@ public class Database {
     private Connection connection;
     private Statement statement;
 
+    public Database() {
+    }
+
+    public Database(Connection connection, Statement statement) {
+        this.connection = connection;
+        this.statement = statement;
+    }
+
     //Metdodo que me ejecuta la query en la base de datos
     public ResultSet loadSelect(String query) {
         ResultSet rs = null;
-        Statement st = null;
         try {
-            st = connection.createStatement();
-            rs = st.executeQuery(query);
-            System.out.println("query ejec");
+            /*Aqui*/
+            rs = this.statement.executeQuery(query);
         } catch (SQLException e) {
             System.out.println("Error en Database.loadSelect: " + e.getMessage());
             System.out.println("Error en query" + e.getMessage());
@@ -72,9 +78,9 @@ public class Database {
         }catch (SQLException e){
             System.out.println("Error BBDD.conectar.Connection " + e.getMessage());
         }
-        statement = null;
+        /*esto**********************/
         try {
-            statement = connection.createStatement();
+            this.statement = connection.createStatement();
         }catch (SQLException e){
             System.out.println("BBDD.conectar.statement " + e.getMessage());
         }
@@ -97,4 +103,19 @@ public class Database {
         }
     }
 
+    public Connection getConnection() {
+        return connection;
+    }
+
+    public void setConnection(Connection connection) {
+        this.connection = connection;
+    }
+
+    public Statement getStatement() {
+        return statement;
+    }
+
+    public void setStatement(Statement statement) {
+        this.statement = statement;
+    }
 }
