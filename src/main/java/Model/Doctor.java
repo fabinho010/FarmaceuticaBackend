@@ -211,20 +211,26 @@ public class Doctor extends Persona {
         //Creo el html
 
         tabla.append("<table>");
-        tabla.append("<thead><tr><th>ID</th><th>Doctor</th><th>Medicina</th><th>Paciente</th><th>Fecha</th></tr></thead>");
+        tabla.append("<thead>");
+        tabla.append("<tr>" +
+                "<th>Id</th>" +
+                "<th>Doctor_Mail</th>" +
+                "<th>Id_Medicina</th>" +
+                "<th>Id_Paciente</th>" +
+                "<th>Fecha</th>" +
+                "</tr>");
+        tabla.append("</thead>");
         tabla.append("<tbody>");
-
         // Recorre la lista de xips y agrega filas a la tabla
         for (Chip chip : listaChip) {
             tabla.append("<tr>");
             tabla.append("<td>").append(chip.getId()).append("</td>");
             tabla.append("<td>").append(chip.getDoctor_mail()).append("</td>");
-            tabla.append("<td>").append(chip.getMedicina().getName()).append("</td>");
+            tabla.append("<td>").append(chip.getMedicina().getId()).append("</td>");
             tabla.append("<td>").append(chip.getPaciente().getEmail()).append("</td>");
             tabla.append("<td>").append(chip.getFechaFin()).append("</td>");
             tabla.append("</tr>");
         }
-
         tabla.append("</tbody>");
         tabla.append("</table>");
         return  tabla.toString();
