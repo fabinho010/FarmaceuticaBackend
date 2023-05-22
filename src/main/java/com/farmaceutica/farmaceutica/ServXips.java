@@ -14,9 +14,6 @@ public class ServXips extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String mail = request.getParameter("mail");
         String session = request.getParameter("session");
-        System.out.println(mail);
-        System.out.println(session);
-
         Doctor doctor = new Doctor();
         boolean checkLog;
 

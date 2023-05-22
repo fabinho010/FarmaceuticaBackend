@@ -118,15 +118,7 @@ public class Doctor extends Persona {
             ResultSet resultSet = database.getStatement().executeQuery(query);
             //Si me devuelve la fila
             if (resultSet.next()){
-                //Obtengo la contraseña para hacer el login
-                String pass = resultSet.getString("pass");
-                //Llamo al metodo login
-                doctor.login(email,pass);
-                //Confirmo las creendenciales
-                if (doctor.getSession()>0){
-                    resultSet.close();
                     return true;
-                }
             }
         }finally {
             database.closeDatabaseConnection();
