@@ -20,4 +20,12 @@
         <servlet-name>ServXips</servlet-name>
         <url-pattern>/ServXips</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>ServePatients</servlet-name>
+        <servlet-class>com.farmaceutica.farmaceutica.ServePatients</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ServePatients</servlet-name>
+        <url-pattern>/ServePatients</url-pattern>
+    </servlet-mapping>
 </web-app>

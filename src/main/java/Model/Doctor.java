@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 
 public class Doctor extends Persona {
@@ -111,7 +112,6 @@ public class Doctor extends Persona {
     public boolean isLogged(String email,String session) throws SQLException {
         String query = "SELECT * FROM doctor where mail = '" + email +"' AND session = '"+ session+"';";
         Database database = new Database();
-        Doctor doctor = new Doctor();
         try {
             database.initDatabaseConnection();
             //Inicio conexion base de datos
@@ -143,7 +143,6 @@ public class Doctor extends Persona {
             while (resultSet.next()){
                 System.out.println("Entrandoo");
                 int id = resultSet.getInt("id");
-                mail = resultSet.getString("doctor_mail");
                 int medicina = resultSet.getInt("id_medicine");
                 //Obtengo el objeto medicina en la base de datos
                 query= "SELECT * FROM medicine WHERE id ='"+ medicina +"';";
@@ -173,7 +172,7 @@ public class Doctor extends Persona {
                 database2.closeDatabaseConnection();
                 System.out.println("2");
                 Date date = resultSet.getDate("date");
-                chip = new Chip(id,mail,medicine,paciente,date);
+                chip = new Chip(id,this.getEmail(),medicine,paciente,date);
                 listXip.add(chip);
 
             }
@@ -228,6 +227,23 @@ public class Doctor extends Persona {
         return  tabla.toString();
     }
 
+    public List listaPacientes() throws SQLException {
+        String query = "SELECT mail FROM patient;";
+        Database database = new Database();
+        List<String> listaPacientes = new ArrayList<>();
+
+        try {
+            database.initDatabaseConnection();
+            ResultSet resultSet = database.getStatement().executeQuery(query);
+            while (resultSet.next()){
+                String paciente = resultSet.getString("mail");
+                listaPacientes.add(paciente);
+            }
+        } finally {
+            database.closeDatabaseConnection();
+        }
+        return listaPacientes;
+    }
 
 
     //Getters y Setters
