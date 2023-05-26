@@ -245,6 +245,29 @@ public class Doctor extends Persona {
         return listaPacientes;
     }
 
+    public List listaMedicinas() throws SQLException {
+        String query = "SELECT * FROM medicine;";
+        Database database = new Database();
+        List<Medicina> listaMedicina = new ArrayList<>();
+        Medicina medicina;
+        try {
+            database.initDatabaseConnection();
+            ResultSet resultSet = database.getStatement().executeQuery(query);
+            while (resultSet.next()){
+                medicina = null; //Resteo
+                int id = resultSet.getInt("id");
+                String name = resultSet.getString("name");
+                double tmax =resultSet.getDouble("tmax");
+                double tmin = resultSet.getDouble("tmin");
+                medicina = new Medicina(id,name,(float) tmax,(float)tmin);
+                listaMedicina.add(medicina);
+            }
+        } finally {
+            database.closeDatabaseConnection();
+        }
+        return listaMedicina;
+    }
+
 
     //Getters y Setters
 

@@ -28,4 +28,12 @@
         <servlet-name>ServePatients</servlet-name>
         <url-pattern>/ServePatients</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>ServeMedicines</servlet-name>
+        <servlet-class>com.farmaceutica.farmaceutica.ServeMedicines</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ServeMedicines</servlet-name>
+        <url-pattern>/ServeMedicines</url-pattern>
+    </servlet-mapping>
 </web-app>

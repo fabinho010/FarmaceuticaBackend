@@ -78,7 +78,7 @@ public class Database {
         }catch (SQLException e){
             System.out.println("Error BBDD.conectar.Connection " + e.getMessage());
         }
-        this.statement = null;/*esto**********************/
+        this.statement = null;
         try {
             this.statement = connection.createStatement();
         }catch (SQLException e){
