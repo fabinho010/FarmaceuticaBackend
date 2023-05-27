@@ -24,7 +24,6 @@ public class ServeMedicines extends HttpServlet {
                 List<Medicina> listaMedicinas =doctor.listaMedicinas();
                 Gson gson = new Gson();
                 String medicinas = gson.toJson(listaMedicinas);
-                System.out.println(medicinas);
                 response.setHeader("Content-Type","application/json");
                 response.getWriter().write(medicinas);
             }else {

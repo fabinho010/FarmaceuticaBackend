@@ -23,33 +23,6 @@ public class Database {
         this.statement = statement;
     }
 
-    //Metdodo que me ejecuta la query en la base de datos
-    public ResultSet loadSelect(String query) {
-        ResultSet rs = null;
-        try {
-            /*Aqui*/
-            rs = this.statement.executeQuery(query);
-        } catch (SQLException e) {
-            System.out.println("Error en Database.loadSelect: " + e.getMessage());
-            System.out.println("Error en query" + e.getMessage());
-        }
-
-        // Verificar si no hay filas seleccionadas
-        boolean hasRows;
-        try {
-            hasRows = rs != null && rs.next();
-        } catch (SQLException e) {
-            System.out.println("Error al verificar filas en ResultSet: " + e.getMessage());
-            hasRows = false;
-        }
-
-        if (!hasRows) {
-            System.out.println("SIN RESULTADOS");
-        }
-
-        return rs;
-    }
-
 
     //Metoso que me ejecuta los updates
         public void loadUpdate(String query){

@@ -36,4 +36,12 @@
         <servlet-name>ServeMedicines</servlet-name>
         <url-pattern>/ServeMedicines</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>Release</servlet-name>
+        <servlet-class>com.farmaceutica.farmaceutica.Release</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Release</servlet-name>
+        <url-pattern>/Release</url-pattern>
+    </servlet-mapping>
 </web-app>

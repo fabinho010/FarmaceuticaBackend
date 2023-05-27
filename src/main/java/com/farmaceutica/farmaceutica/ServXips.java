@@ -20,10 +20,8 @@ public class ServXips extends HttpServlet {
         try {
             checkLog = doctor.isLogged(mail,session);
             if (checkLog==true){
-                System.out.println("Exito");
                 //Cargo los datos al objeto doctor
                 doctor.load(mail);
-                System.out.println(doctor.getEmail());
                 doctor.loadRealeaseList();
                 if (doctor.getRelaseList().isEmpty()){
                     response.sendError(HttpServletResponse.SC_NOT_FOUND,"La lista de Chips esta vacía.");

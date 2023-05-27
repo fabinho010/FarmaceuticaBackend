@@ -3,6 +3,7 @@ package Model;
 import dao.Database;
 
 import java.sql.*;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -141,7 +142,6 @@ public class Doctor extends Persona {
             database.initDatabaseConnection();
             ResultSet resultSet = database.getStatement().executeQuery(query);
             while (resultSet.next()){
-                System.out.println("Entrandoo");
                 int id = resultSet.getInt("id");
                 int medicina = resultSet.getInt("id_medicine");
                 //Obtengo el objeto medicina en la base de datos
@@ -170,7 +170,6 @@ public class Doctor extends Persona {
 
                 }
                 database2.closeDatabaseConnection();
-                System.out.println("2");
                 Date date = resultSet.getDate("date");
                 chip = new Chip(id,this.getEmail(),medicine,paciente,date);
                 listXip.add(chip);
@@ -180,7 +179,7 @@ public class Doctor extends Persona {
             //Añado la lista al doctor
             if (listXip.isEmpty()){
                 database.closeDatabaseConnection();
-                System.out.println("No hay na");
+                System.out.println("No hay nada");
             }else{
                 this.setRelaseList(listXip);
                 database.closeDatabaseConnection();
@@ -266,6 +265,23 @@ public class Doctor extends Persona {
             database.closeDatabaseConnection();
         }
         return listaMedicina;
+    }
+
+    public boolean darAlta(int idXip,String mailD,int medicamento,String mailP,LocalDate fecha) throws SQLException {
+        java.sql.Date date = java.sql.Date.valueOf(fecha);
+        String query =  "INSERT INTO xip (id, doctor_mail, id_medicine, id_patient, date) " +
+                "VALUES (" + idXip + ", '" + mailD + "', " + medicamento + ", '" + mailP + "', '" + date + "');";
+        Database database = new Database();
+        try {
+            database.initDatabaseConnection();
+            int rowsAffected = database.getStatement().executeUpdate(query);
+            if (rowsAffected > 0){
+                return true;
+            }
+        }finally {
+            database.closeDatabaseConnection();
+        }
+        return false;
     }
 
 
