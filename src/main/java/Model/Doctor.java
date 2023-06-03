@@ -198,8 +198,7 @@ public class Doctor extends Persona {
         StringBuilder tabla = new StringBuilder();
         ArrayList<Chip> listaChip = this.getRelaseList();
 
-        //Creo el html
-
+        //Creo el html,insertando los valores de cada columna en su resoectiva casilla
         tabla.append("<table>");
         tabla.append("<thead>");
         tabla.append("<tr>" +
@@ -253,7 +252,6 @@ public class Doctor extends Persona {
             database.initDatabaseConnection();
             ResultSet resultSet = database.getStatement().executeQuery(query);
             while (resultSet.next()){
-                medicina = null; //Resteo
                 int id = resultSet.getInt("id");
                 String name = resultSet.getString("name");
                 double tmax =resultSet.getDouble("tmax");

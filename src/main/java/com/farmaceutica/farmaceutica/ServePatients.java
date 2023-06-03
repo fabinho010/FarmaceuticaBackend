@@ -20,8 +20,10 @@ public class ServePatients extends HttpServlet {
         Doctor doctor = new Doctor();
         try {
             if (doctor.isLogged(mail,session)){
+                //Cargo la lista de medicinas
                 List<String> listaPacientes = doctor.listaPacientes();
                 Gson gson = new Gson();
+                //Conversion a JSon mediante GSON
                 String pacientes = gson.toJson(listaPacientes);
                 response.setHeader("Content-Type", "application/json");
                 response.getWriter().write(pacientes);

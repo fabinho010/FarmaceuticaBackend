@@ -21,7 +21,9 @@ public class ServeMedicines extends HttpServlet {
 
         try {
             if (doctor.isLogged(mail,session)){
+                //Cargo la lista de medicinas
                 List<Medicina> listaMedicinas =doctor.listaMedicinas();
+                //Conversion a JSon mediante GSON
                 Gson gson = new Gson();
                 String medicinas = gson.toJson(listaMedicinas);
                 response.setHeader("Content-Type","application/json");

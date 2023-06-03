@@ -27,13 +27,13 @@ public class Release extends HttpServlet {
 
             Doctor doctor = new Doctor();
             //Para comprobar la fecha es correcta
-
              LocalDate fechaActual = LocalDate.now();
              LocalDate fechaIntro = LocalDate.parse(date);
 
             try {
                 if (doctor.isLogged(mail,session)){
                     if (fechaIntro.isAfter(fechaActual)){
+                        //Compruebo con un booleano si se se da de alta el chip
                        boolean respuesta = doctor.darAlta(Integer.parseInt(idXip),mail,Integer.valueOf(medicamento),mailP,fechaIntro);
                        if (respuesta){
                            response.getWriter().write("ok");
